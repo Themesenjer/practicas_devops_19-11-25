@@ -1,23 +1,22 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
-
 name: Despliegue de Hola mundo
 
 on:
   push:
-    branches: "main"
+    branches:
+      - main
 
 permissions:
-    contents: read
-    packages: write
+  contents: read
+  packages: write
+
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.10
+
+    - name: Set up Python 3.11
       uses: actions/setup-python@v3
       with:
         python-version: "3.11"
@@ -34,3 +33,18 @@ jobs:
       with:
         push: true
         tags: ghcr.io/byronmoreno/salchi:2.0.0
+
+    - name: Pruebas de ssh con el servidor
+      uses: appleboy/ssh-action@v1
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        port: ${{ secrets.VPS_SSH_PORT }}
+        username: ${{ secrets.VPS_USER }}
+        password: ${{ secrets.VPS_PASSWOORD }}
+        script: |  
+            echo "Conexión exitosa desde GitHub Actions"
+            pwd
+            date
+            whoami
+            hostname
+            uptime
