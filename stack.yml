@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  goku:
+    image: ghcr.io/byronmoreno/salchi:2.0.0
+    deploy:
+      replicas: 1
+      labels:
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.goku.entrypoints=http'
+        - 'traefik.http.routers.goku.rule=Host(`goku.byronrm.com`)'
+        - 'traefik.http.middlewares.goku-https-redirect.redirectscheme.scheme=https'
+        - 'traefik.http.routers.goku.middlewares=goku-https-redirect'
+        - 'traefik.http.routers.goku-secure.entrypoints=https'
+        - 'traefik.http.routers.goku-secure.rule=Host(`goku.byronrm.com`)'
+        - 'traefik.http.routers.goku-secure.tls=true'
+        - 'traefik.http.routers.goku-secure.tls.certresolver=http'
+        - 'traefik.http.routers.goku-secure.service=goku'
+        - 'traefik.http.services.goku.loadbalancer.server.port=1001'
+        - 'traefik.docker.network=traefik-public'
+    networks:
+      - traefik-public
+
+networks:
+  traefik-public:
+    external: true
