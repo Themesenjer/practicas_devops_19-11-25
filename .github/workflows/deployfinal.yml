@@ -21,14 +21,14 @@ jobs:
       with:
         python-version: "3.11"
     
-    - name: 🔐 Login to GitHub Container Registry
+    - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: 🏗️ Build and push Docker image
+    - name: Build and push Docker image
       uses: docker/build-push-action@v6
       with:
         push: true
@@ -58,5 +58,33 @@ jobs:
         password: ${{ secrets.VPS_PASSWORD }}
         source: "stack.yml"
         target: "/home/${{ secrets.VPS_USER }}/automatizar"
+    - name: Deploy de el servidor
+      uses: appleboy/ssh-action@v1
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        port: ${{ secrets.VPS_SSH_PORT }}
+        username: ${{ secrets.VPS_USER }}
+        password: ${{ secrets.VPS_PASSWORD }}
+        script: |  
+          echo "Deployando los servicios"
+
+          cd ~/automatizar
+
+          echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u Themesenjer --password-stdin
+          docker pull ghcr.io/themesenjer/salchi:2.0.0
+
+          #Borrar el stack
+          docker stack rm quintob || true
+
+          #Tiempo de espera hasta que bajen los servicios
+          sleep 60
+
+          docker stack deploy --with-registry-auth -c stack.yml quintob
+
+          sleep 30
           
- 
+          #Ver los servicios
+          docker ps
+
+
+
