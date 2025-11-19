@@ -5,7 +5,7 @@ name: Despliegue de Hola mundo
 
 on:
   push:
-    branches: "quintob"
+    branches: "main"
 
 permissions:
     contents: read
