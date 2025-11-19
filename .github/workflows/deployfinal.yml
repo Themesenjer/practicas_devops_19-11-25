@@ -32,7 +32,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         push: true
-        tags: ghcr.io/byronmoreno/salchi:2.0.0
+        tags: ghcr.io/Themesenjer/salchi:2.0.0
 
     - name: Pruebas de ssh con el servidor
       uses: appleboy/ssh-action@v1
@@ -42,9 +42,9 @@ jobs:
         username: ${{ secrets.VPS_USER }}
         password: ${{ secrets.VPS_PASSWOORD }}
         script: |  
-            echo "Conexión exitosa desde GitHub Actions"
-            pwd
-            date
-            whoami
-            hostname
-            uptime
+          echo "Conexión exitosa desde GitHub Actions"
+          pwd
+          date
+          whoami
+          hostname
+          uptime
